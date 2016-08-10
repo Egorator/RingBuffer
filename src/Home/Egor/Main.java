@@ -19,10 +19,11 @@ class TestRunner {
 class TestRingBuffer {
 
     @Test
-    public void testDataPut() {
+    public void testDataPut() {//NOTE put method returns boolean, so we do not need it in assert
         RingBuffer ringBuffer = new RingBuffer(8);
         Object expectedDataPut = 1;
-        assertEquals(expectedDataPut, ringBuffer.put(1));
+        ringBuffer.put(1);
+        assertEquals(expectedDataPut, ringBuffer.elements[0]);
     }
 
     @Test
@@ -91,7 +92,7 @@ class RingBuffer {
         return this.writePos;
     }
 
-    public int remainingCapacity() {
+    public int remainingCapacity() {//NOTE returns boolean!
         return this.capacity - this.available;
     }
 
