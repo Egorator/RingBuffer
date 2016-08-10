@@ -1,46 +1,72 @@
 package Home.Egor;
 
-public class Main {
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
+class TestRunner {
     public static void main(String[] args) {
+        Result result = JUnitCore.runClasses(TestRingBuffer.class);
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        System.out.println(result.wasSuccessful());
+    }
+}
+
+class TestRingBuffer {
+
+    @Test
+    public void testDataPut() {
         RingBuffer ringBuffer = new RingBuffer(8);
-        System.out.println("Initialized new buffer, capacity: " + ringBuffer.capacity());
-        System.out.println("Putting data into 0'th cell: a: " + ringBuffer.put('a') + "... Done");
+        Object expectedDataPut = 1;
+        assertEquals(expectedDataPut, ringBuffer.put(1));
+    }
 
-        System.out.println("Reading data from 0'th cell: a: " + ringBuffer.take() + "... Done");
+    @Test
+    public void testDataTake() {
+        RingBuffer ringBuffer = new RingBuffer(8);
+        Object expectedDataTaken = 3;
+        ringBuffer.put(3);
+        assertEquals(expectedDataTaken, ringBuffer.take());
+    }
 
-        System.out.println("Putting data into 1'th cell: b: " + ringBuffer.put('b') + "... Done");
-        System.out.println("Putting data into 2'th cell: c: " + ringBuffer.put('c') + "... Done");
-        System.out.println("Putting data into 3'th cell: d: " + ringBuffer.put('d') + "... Done");
-
-        System.out.println("Reading data from 1'th cell: b: " + ringBuffer.take() + "... Done");
-        System.out.println("Reading data from 2'th cell: c: " + ringBuffer.take() + "... Done");
-
-        System.out.println("Putting data into 4'th cell: e: " + ringBuffer.put('e') + "... Done");
-        System.out.println("Putting data into 5'th cell: f: " + ringBuffer.put('f') + "... Done");
-        System.out.println("Putting data into 6'th cell: g: " + ringBuffer.put('g') + "... Done");
-        System.out.println("Putting data into 7'th cell: h: " + ringBuffer.put('h') + "... Done");
-        System.out.println("Putting data into 0'th cell: i: " + ringBuffer.put('i') + "... Done");
-
-        System.out.println("Checking current data available for reading: " + ringBuffer.available());
-        System.out.println("Checking remaining capacity: " + ringBuffer.remainingCapacity());
-
-        System.out.println("Reading data from 3'th cell: d: " + ringBuffer.take() + "... Done");
-        System.out.println("Reading data from 4'th cell: e: " + ringBuffer.take() + "... Done");
-        System.out.println("Reading data from 5'th cell: f: " + ringBuffer.take() + "... Done");
-        System.out.println("Reading data from 6'th cell: g: " + ringBuffer.take() + "... Done");
-        System.out.println("Reading data from 7'th cell: h: " + ringBuffer.take() + "... Done");
-        System.out.println("Reading data from 0'th cell: i: " + ringBuffer.take() + "... Done");
-
-        System.out.println("Checking current data available for reading: " + ringBuffer.available());
-
+    @Test
+    public void testResetFunc() {
+        RingBuffer ringBuffer = new RingBuffer(8);
+        ringBuffer.put('a');
+        ringBuffer.put('b');
+        ringBuffer.take();
         ringBuffer.reset();
+        Object expectedEmptyData = null;
+        assertEquals(expectedEmptyData, ringBuffer.available());
+        assertEquals(expectedEmptyData, ringBuffer.writePos());
+    }
+
+    @Test
+    public void testRemainingCapacity() {
+        RingBuffer ringBuffer = new RingBuffer(8);
+        ringBuffer.put('a');
+        ringBuffer.put('b');
+        ringBuffer.take();
+        int expectedRemainingCapacityValue = 1;
+        assertEquals(expectedRemainingCapacityValue, ringBuffer.remainingCapacity());
+    }
+
+    @Test//TODO do I really need this test?
+    public void testCapacityFunc() {
+        RingBuffer ringBuffer = new RingBuffer(8);
+        int expectedCapacity = 8;
+        assertEquals(expectedCapacity, ringBuffer.capacity());
     }
 }
 
 class RingBuffer {
     public Object[] elements = null;
 
-    private int capacity  = 0;
+    private int capacity  = 0;//TODO should I initialize them somwhere else, but not there?
     private int writePos  = 0;
     private int available = 0;
 
@@ -57,15 +83,19 @@ class RingBuffer {
     public int capacity() {
         return this.capacity;
     }
-    public int available(){
+    public int available() {
         return this.available;
+    }
+
+    public int writePos() {
+        return this.writePos;
     }
 
     public int remainingCapacity() {
         return this.capacity - this.available;
     }
 
-    public boolean put(Object element){
+    public boolean put(Object element) {
 
         if(available < capacity){
             if(writePos >= capacity){
