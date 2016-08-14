@@ -1,11 +1,12 @@
 package Home.Egor;
 
 public class RingBuffer {
-    public Object[] elements = null;
+    // TODO low priority: switch to writePos and readPos, remove member "available". Only do with good unit tests coverage.
+    public Object[] elements = null; // TODO should be private or protected.
 
-    private int capacity  = 0;//TODO should I initialize them somwhere else, but not there?
-    private int writePos  = 0;
-    private int available = 0;
+    private int capacity  = 0;//TODO should I initialize them somwhere else, but not there? // TODO do not initialize it here.
+    private int writePos  = 0; // TODO what is the difference if we initialize it here or in constructor? Move initialization to constructor?
+    private int available = 0; // TODO same as above.
 
     public RingBuffer(int capacity) {
         this.capacity = capacity;
@@ -26,16 +27,16 @@ public class RingBuffer {
 
     public int writePos() {
         return this.writePos;
-    }
+    } // TODO delete (not public method at least).
 
     public int remainingCapacity() {//NOTE returns boolean!
         return this.capacity - this.available;
     }
 
-    public boolean put(Object element) {
+    public boolean put(Object element) { // TODO split in two files: interface and implementation (research, see java collections code).
 
-        if(available < capacity){
-            if(writePos >= capacity){
+        if(available < capacity){ // TODO use "early return" here? if(remainingCapacity() == 0) return false; // else continue our code.
+            if(writePos >= capacity){ // writePos can't be more than capacity
                 writePos = 0;
             }
             elements[writePos] = element;
