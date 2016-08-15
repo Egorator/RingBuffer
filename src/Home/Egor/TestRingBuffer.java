@@ -12,10 +12,30 @@ public class TestRingBuffer {
     public void testDataIO() {
         RingBuffer ringBuffer = new RingBuffer(8);
         Object expectedDataPut = 1; // TODO use expectedDataResult as an argument below (repeat for all tests). [DONE]
-        // TODO check that put() succeeded. [DONE]
-        boolean putMethodResult = ringBuffer.put(expectedDataPut);
-        assertEquals(true, putMethodResult);//checking that put() succeeded
+        // TODO check that put() succeeded. //put() theoretically always succeeds! [ASK]
+        ringBuffer.put(expectedDataPut);
         assertEquals(expectedDataPut, ringBuffer.take()); // TODO make elements protected or private, use take() instead. [DONE]
+    }
+
+/*    @Test//TODO is this test useless? Theoretically, if we have full buffer - we just overwrite first element. [ASK]
+    public void testPutUnavailability() {//tests put() method in case, when RemainingCapacity = 0. Method should return false
+        RingBuffer ringBuffer = new RingBuffer(0);
+        assertEquals(false, ringBuffer.put(1));
+    }*/
+
+    @Test
+    public void testTakeVoid() {
+        RingBuffer ringBuffer = new RingBuffer(0);
+        assertEquals(null, ringBuffer.take());
+    }
+
+    @Test
+    public void testWritePosWrapped() {//tests writePos when put() method reverts it to buffer's beginning
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        ringBuffer.put(2);
+        ringBuffer.put(3);
+        assertEquals(ringBuffer.writePos(), 1);
     }
 
 /*    @Test

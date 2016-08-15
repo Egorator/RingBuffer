@@ -10,7 +10,6 @@ public class RingBuffer {
 
     public RingBuffer(int capacity) {
         this.capacity = capacity;
-
         this.elements = new Object[capacity];
     }
 
@@ -34,9 +33,9 @@ public class RingBuffer {
         return this.capacity - this.available;
     }
 
-    public boolean put(Object element) { // TODO split in two files: interface and implementation (research, see java collections code). [DONE]
+    public void put(Object element) { //TODO split in two files: interface and implementation (research, see java collections code). [DONE]
 
-        if(remainingCapacity() == 0) return false;
+/*        if(remainingCapacity() == 0) return false;
         else {
             if(writePos == capacity){ // writePos can't be more than capacity
                 writePos = 0;
@@ -45,11 +44,18 @@ public class RingBuffer {
             writePos++;
             available++;
             return true;
+        }*/
+        //TODO why the hell we need to return false at all? We overwrite first element if buffer is full! [ASK]
+        if(writePos == capacity){ // writePos can't be more than capacity
+            writePos = 0;
         }
+        elements[writePos] = element;
+        writePos++;
+        available++;
 
 
 /*        if(available < capacity){ // TODO use "early return" here? if(remainingCapacity() == 0) return false; // else continue our code. [DONE]
-            if(writePos == capacity){ // writePos can't be more than capacity
+            if(writePos >= capacity){ // writePos can't be more than capacity
                 writePos = 0;
             }
             elements[writePos] = element;
