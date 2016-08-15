@@ -2,14 +2,15 @@ package Home.Egor;
 
 public class RingBuffer {
     // TODO low priority: switch to writePos and readPos, remove member "available". Only do with good unit tests coverage.
-    public Object[] elements = null; // TODO should be private or protected.
+    private Object[] elements = null; // TODO should be private or protected.[DONE]
 
-    private int capacity  = 0;//TODO should I initialize them somwhere else, but not there? // TODO do not initialize it here.
-    private int writePos  = 0; // TODO what is the difference if we initialize it here or in constructor? Move initialization to constructor?
-    private int available = 0; // TODO same as above.
+    private int capacity  = 0;//TODO should I initialize them somewhere else, but not there? // TODO do not initialize it here. [???]
+    private int writePos  = 0; // TODO what is the difference if we initialize it here or in constructor? Move initialization to constructor? [DONE]
+    private int available = 0; // TODO same as above. [DONE]
 
     public RingBuffer(int capacity) {
         this.capacity = capacity;
+
         this.elements = new Object[capacity];
     }
 
@@ -25,18 +26,19 @@ public class RingBuffer {
         return this.available;
     }
 
-    public int writePos() {
+    protected int writePos() {
         return this.writePos;
-    } // TODO delete (not public method at least).
+    } // TODO delete (not public method at least). [DONE]
 
-    public int remainingCapacity() {//NOTE returns boolean!
+    public int remainingCapacity() {
         return this.capacity - this.available;
     }
 
-    public boolean put(Object element) { // TODO split in two files: interface and implementation (research, see java collections code).
+    public boolean put(Object element) { // TODO split in two files: interface and implementation (research, see java collections code). [DONE]
 
-        if(available < capacity){ // TODO use "early return" here? if(remainingCapacity() == 0) return false; // else continue our code.
-            if(writePos >= capacity){ // writePos can't be more than capacity
+        if(remainingCapacity() == 0) return false;
+        else {
+            if(writePos == capacity){ // writePos can't be more than capacity
                 writePos = 0;
             }
             elements[writePos] = element;
@@ -45,7 +47,18 @@ public class RingBuffer {
             return true;
         }
 
-        return false;
+
+/*        if(available < capacity){ // TODO use "early return" here? if(remainingCapacity() == 0) return false; // else continue our code. [DONE]
+            if(writePos == capacity){ // writePos can't be more than capacity
+                writePos = 0;
+            }
+            elements[writePos] = element;
+            writePos++;
+            available++;
+            return true;
+        }
+
+        return false;*/
     }
 
     public Object take() {
