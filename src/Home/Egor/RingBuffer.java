@@ -46,12 +46,13 @@ public class RingBuffer {
             return true;
         }*/
         //TODO why the hell we need to return false at all? We overwrite first element if buffer is full! [ASK]
-        if(writePos == capacity){ // writePos can't be more than capacity
-            writePos = 0;
-        }
+
         elements[writePos] = element;
         writePos++;
         available++;
+        if(writePos == capacity){ // writePos can't be more than capacity
+            writePos = 0;
+        }
 
 
 /*        if(available < capacity){ // TODO use "early return" here? if(remainingCapacity() == 0) return false; // else continue our code. [DONE]

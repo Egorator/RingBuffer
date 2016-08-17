@@ -34,12 +34,7 @@ public class TestRingBuffer {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
-        ringBuffer.put(3);//NOTE!!! realization is made so, that writePos returns to the beginning of an array only
-        //when we're trying to put an element[capacity+1]. That's why, when we put 2 elements into a buffer of capacity
-        //of 2, writePos stays on 2. It "refreshes" only with a new element.
-        //TODO here we receive a negative result, if we try to compare our .writePos() with 0, while adding 2 elements [ASK]
-        //TODO to a buffer with capacity = 2, because of writePos changes only with next element. Do we need some fixes?
-        assertEquals(ringBuffer.writePos(), 1);
+        assertEquals(ringBuffer.writePos(), 0);
     }
 
     @Test
