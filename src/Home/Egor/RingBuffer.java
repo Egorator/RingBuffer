@@ -13,8 +13,7 @@ public class RingBuffer {
         }
         bufSize = capacity + 1;
         elements = new Object[bufSize];
-        writePos = 0;
-        readPos = 0;
+        reset();
     }
 
     public void reset() {
@@ -27,11 +26,13 @@ public class RingBuffer {
     }
 
     public int remainingCapacity() {
-        if (writePos > readPos)
-        return capacity() - writePos + readPos;
-        /*if (readPos > writePos)
-        return readPos - writePos;*///writePos can't overrun readPos in this implementation
-        return capacity();
+        return capacity() - numElementsInBuffer();
+    }
+
+    public int numElementsInBuffer() {
+        if (writePos >= readPos)
+            return writePos - readPos;
+        return bufSize + writePos - readPos;
     }
 
     public boolean put(Object element) {
@@ -61,7 +62,7 @@ public class RingBuffer {
 
     public Object take() {
         Object nextObj = elements[readPos];
-        if (readPos == bufSize - 1) {
+        if (readPos == capacity()) {
             readPos = 0;
             return nextObj;
         }

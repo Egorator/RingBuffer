@@ -75,4 +75,11 @@ public class TestRingBuffer {
         int expectedCapacity = 8;
         assertEquals(expectedCapacity, ringBuffer.capacity());
     }
+
+    @Test
+    public void testNumElementsInBuffer() {
+        RingBuffer ringBuffer = new RingBuffer(8);
+        ringBuffer.put(3);
+        assertEquals(1, ringBuffer.numElementsInBuffer());
+    }
 }
