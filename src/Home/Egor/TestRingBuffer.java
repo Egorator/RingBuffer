@@ -108,4 +108,16 @@ public class TestRingBuffer {
         RingBuffer ringBuffer = new RingBuffer(2);
         assertEquals(null, ringBuffer.take());
     }
+
+    @Test
+    public void testTakeFails2() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        ringBuffer.put(2);
+        ringBuffer.take();
+        ringBuffer.take();
+        ringBuffer.put(3);
+        ringBuffer.take();
+        assertEquals(null, ringBuffer.take());
+    }
 }
