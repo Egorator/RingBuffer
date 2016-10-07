@@ -1,62 +1,57 @@
 package Home.Egor;
 
 public class RingBuffer {
-    // TODO low priority: switch to writePos and readPos, remove member "available". Only do with good unit tests coverage.
-    private Object[] elements = null; // TODO should be private or protected.[DONE]
+    private Object[] elements;
 
-    private int capacity  = 0;//TODO should I initialize them somewhere else, but not there? // TODO do not initialize it here. [???]
-    private int writePos  = 0; // TODO what is the difference if we initialize it here or in constructor? Move initialization to constructor? [DONE]
-    private int available = 0; // TODO same as above. [DONE]
+    private int capacity;
+    private int writePos;
+    private int readPos;
 
     public RingBuffer(int capacity) {
         this.capacity = capacity;
-        this.elements = new Object[capacity];
+        elements = new Object[capacity];
+        writePos = 0;
+        readPos = 0;
     }
 
     public void reset() {
-        this.writePos = 0;
-        this.available = 0;
+        writePos = 0;
+        readPos = 0;
     }
 
     public int capacity() {
-        return this.capacity;
+        return capacity;
     }
-    public int available() {
-        return this.available;
+    public int readPos() {
+        return readPos;
     }
 
     protected int writePos() {
-        return this.writePos;
-    } // TODO delete (not public method at least). [DONE]
-
-    public int remainingCapacity() {
-        return this.capacity - this.available;
+        return writePos;
     }
 
-    public void put(Object element) { //TODO split in two files: interface and implementation (research, see java collections code). [DONE]
+    public int remainingCapacity() {
+        if (writePos > readPos)
+        return capacity - writePos + readPos;
+        /*if (readPos > writePos)
+        return readPos - writePos;*///writePos can't overrun readPos in this implementation
+        return capacity;
+    }
 
-/*        if(remainingCapacity() == 0) return false;
-        else {
-            if(writePos == capacity){ // writePos can't be more than capacity
-                writePos = 0;
-            }
-            elements[writePos] = element;
-            writePos++;
-            available++;
-            return true;
-        }*/
-        //TODO why the hell we need to return false at all? We overwrite first element if buffer is full! [ASK]
-
+    public boolean put(Object element) {
+        //TODO idiomatic way of error handling in java. return code or throw exception? (in case of buffer overflow) [DONE]
+        //TODO p.s. I mean throw your own exception or return boolean of success. In case of bool we need unit test,
+        //TODO expecting boolean, in case of throwable exception we need somehow to check wether it thew or not.
+        if (remainingCapacity() == 1)//we need to have at least 1 empty cell in this implementation
+            return false;
         elements[writePos] = element;
         writePos++;
-        available++;
-        if(writePos == capacity){ // writePos can't be more than capacity
+        if (writePos == capacity)//writePos wrapped
             writePos = 0;
-        }
+        return true;
 
-
-/*        if(available < capacity){ // TODO use "early return" here? if(remainingCapacity() == 0) return false; // else continue our code. [DONE]
-            if(writePos >= capacity){ // writePos can't be more than capacity
+/*        if (available < capacity) {
+            if (writePos >= capacity) { // writePos can't be more than capacity
                 writePos = 0;
             }
             elements[writePos] = element;
@@ -69,15 +64,12 @@ public class RingBuffer {
     }
 
     public Object take() {
-        if(available == 0){
-            return null;
+        Object nextObj = elements[readPos];
+        if (readPos == capacity - 1) {
+            readPos = 0;
+            return nextObj;
         }
-        int nextSlot = writePos - available;
-        if(nextSlot < 0){
-            nextSlot += capacity;
-        }
-        Object nextObj = elements[nextSlot];
-        available--;
+        readPos++;
         return nextObj;
     }
 }
