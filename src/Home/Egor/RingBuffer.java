@@ -39,7 +39,7 @@ public class RingBuffer {
         if (remainingCapacity() == 0)
             return false;
         elements[writePos] = element;
-        setPos(writePos);
+        writePos = nextPos(writePos);
         return true;
     }
 
@@ -47,11 +47,11 @@ public class RingBuffer {
         if (isEmpty())
             return null;
         Object nextObj = elements[readPos];
-        setPos(readPos);
+        readPos = nextPos(readPos);
         return nextObj;
     }
 
-    private int setPos(int curPos) {
+    private int nextPos(int curPos) {
         curPos = (curPos + 1) % bufSize;
         return curPos;
     }
