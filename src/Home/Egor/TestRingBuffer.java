@@ -1,7 +1,6 @@
 package Home.Egor;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 public class TestRingBuffer {
@@ -119,5 +118,33 @@ public class TestRingBuffer {
         ringBuffer.put(3);
         ringBuffer.take();
         assertEquals(null, ringBuffer.take());
+    }
+
+    @Test
+    public void testIsFullTrue() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        ringBuffer.put(2);
+        assertEquals(true, ringBuffer.isFull());
+    }
+
+    @Test
+    public void testIsFullFalse() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        assertEquals(false, ringBuffer.isFull());
+    }
+
+    @Test
+    public void testIsEmptyTrue() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        assertEquals(true, ringBuffer.isEmpty());
+    }
+
+    @Test
+    public void testIsEmptyFalse() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        assertEquals(false, ringBuffer.isEmpty());
     }
 }

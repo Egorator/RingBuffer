@@ -39,14 +39,16 @@ public class RingBuffer {
         if (remainingCapacity() == 0)
             return false;
         elements[writePos] = element;
-        writePos++;
+        writePos = (writePos + 1) % bufSize;
+        //below is analog code:
+        /*writePos++;
         if (writePos == bufSize)//writePos wrapped
-            writePos = 0;
+            writePos = 0;*/
         return true;
     }
 
     public Object take() {//should return null when takes nothing!//TODO unit tests for success, for fail
-        if (elements[readPos] == null)
+        if (isEmpty())
             return null;
         Object nextObj = elements[readPos];
         if (readPos == capacity()) {
@@ -55,5 +57,17 @@ public class RingBuffer {
         }
         readPos++;
         return nextObj;
+    }
+
+    public boolean isFull() {
+        if (numElementsInBuffer() == capacity())
+            return true;
+        return false;
+    }
+
+    public boolean isEmpty() {
+        if (numElementsInBuffer() == 0)
+            return true;
+        return false;
     }
 }
