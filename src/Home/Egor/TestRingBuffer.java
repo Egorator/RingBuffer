@@ -10,7 +10,6 @@ public class TestRingBuffer {
     public void testDataIO() {
         RingBuffer ringBuffer = new RingBuffer(8);
         Object expectedDataPut = 1;
-        // TODO check that put() succeeded. //put() theoretically always succeeds! [ASK]
         ringBuffer.put(expectedDataPut);
         assertEquals(expectedDataPut, ringBuffer.take());
     }
@@ -71,15 +70,42 @@ public class TestRingBuffer {
 
     @Test
     public void testCapacityFunc() {
-        RingBuffer ringBuffer = new RingBuffer(8);
-        int expectedCapacity = 8;
+        RingBuffer ringBuffer = new RingBuffer(2);
+        int expectedCapacity = 2;
         assertEquals(expectedCapacity, ringBuffer.capacity());
     }
 
     @Test
     public void testNumElementsInBuffer() {
-        RingBuffer ringBuffer = new RingBuffer(8);
+        RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(3);
         assertEquals(1, ringBuffer.numElementsInBuffer());
+    }
+
+    @Test
+    public void testPutSucceeds() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        assertEquals(true, ringBuffer.put(1));
+    }
+
+    @Test
+    public void testPutFails() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        ringBuffer.put(2);
+        assertEquals(false, ringBuffer.put(3));
+    }
+
+    @Test
+    public void testTakeSucceeds() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put(1);
+        assertEquals(1, ringBuffer.take());
+    }
+
+    @Test
+    public void testTakeFails() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        assertEquals(null, ringBuffer.take());
     }
 }
