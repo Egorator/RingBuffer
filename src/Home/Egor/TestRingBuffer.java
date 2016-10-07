@@ -60,6 +60,16 @@ public class TestRingBuffer {
     }
 
     @Test
+    public void testRemainingCapacity2() {
+        RingBuffer ringBuffer = new RingBuffer(2);
+        ringBuffer.put('a');
+        ringBuffer.put('b');
+        ringBuffer.take();
+        ringBuffer.put('c');
+        assertEquals(0, ringBuffer.remainingCapacity());
+    }
+
+    @Test
     public void testCapacityFunc() {
         RingBuffer ringBuffer = new RingBuffer(8);
         int expectedCapacity = 8;
