@@ -1,9 +1,119 @@
 package Home.Egor;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.Assert.*;
 
 public class TestRingBuffer {
+
+    @Test
+    public void RingBufferStates() {
+        RingBuffer ringBuffer = new RingBuffer(3);
+        assertEquals(3, ringBuffer.capacity());
+
+        assertEquals(3, ringBuffer.remainingCapacity());
+        assertEquals(0, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertTrue(ringBuffer.isEmpty());
+
+        assertTrue(ringBuffer.put(1));
+
+        assertEquals(2, ringBuffer.remainingCapacity());
+        assertEquals(1, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertTrue(ringBuffer.put(2));
+
+        assertEquals(1, ringBuffer.remainingCapacity());
+        assertEquals(2, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertTrue(ringBuffer.put(3));
+
+        assertEquals(0, ringBuffer.remainingCapacity());
+        assertEquals(3, ringBuffer.numElementsInBuffer());
+        assertTrue(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertFalse(ringBuffer.put(4));
+
+        assertEquals(0, ringBuffer.remainingCapacity());
+        assertEquals(3, ringBuffer.numElementsInBuffer());
+        assertTrue(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertEquals(1, ringBuffer.take());
+
+        assertEquals(1, ringBuffer.remainingCapacity());
+        assertEquals(2, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertTrue(ringBuffer.put(5));
+
+        assertEquals(0, ringBuffer.remainingCapacity());
+        assertEquals(3, ringBuffer.numElementsInBuffer());
+        assertTrue(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertFalse(ringBuffer.put(6));
+
+        assertEquals(0, ringBuffer.remainingCapacity());
+        assertEquals(3, ringBuffer.numElementsInBuffer());
+        assertTrue(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertEquals(2, ringBuffer.take());
+
+        assertEquals(1, ringBuffer.remainingCapacity());
+        assertEquals(2, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertEquals(3, ringBuffer.take());
+
+        assertEquals(2, ringBuffer.remainingCapacity());
+        assertEquals(1, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertEquals(5, ringBuffer.take());
+
+        assertEquals(3, ringBuffer.remainingCapacity());
+        assertEquals(0, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertTrue(ringBuffer.isEmpty());
+
+        assertNull(ringBuffer.take());
+
+        assertEquals(3, ringBuffer.remainingCapacity());
+        assertEquals(0, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertTrue(ringBuffer.isEmpty());
+
+        assertTrue(ringBuffer.put(7));
+
+        assertEquals(2, ringBuffer.remainingCapacity());
+        assertEquals(1, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertFalse(ringBuffer.isEmpty());
+
+        assertEquals(7, ringBuffer.take());
+
+        assertEquals(3, ringBuffer.remainingCapacity());
+        assertEquals(0, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertTrue(ringBuffer.isEmpty());
+
+        assertNull(ringBuffer.take());
+
+        assertEquals(3, ringBuffer.remainingCapacity());
+        assertEquals(0, ringBuffer.numElementsInBuffer());
+        assertFalse(ringBuffer.isFull());
+        assertTrue(ringBuffer.isEmpty());
+    }
 
     @Test
     public void testDataIO() {
@@ -16,7 +126,7 @@ public class TestRingBuffer {
     @Test
     public void testTakeVoid() {
         RingBuffer ringBuffer = new RingBuffer(2);
-        assertEquals(null, ringBuffer.take());
+        assertNull(ringBuffer.take());
     }
 
     @Test
@@ -24,7 +134,7 @@ public class TestRingBuffer {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
-        assertEquals(ringBuffer.put(3), false);
+        assertFalse(ringBuffer.put(3));
     }
 
     @Test
@@ -35,7 +145,7 @@ public class TestRingBuffer {
         ringBuffer.take();
         ringBuffer.put(3);
         ringBuffer.take();
-        assertEquals(ringBuffer.take(), 3);
+        assertEquals(3, ringBuffer.take());
     }
 
     @Test
@@ -84,7 +194,7 @@ public class TestRingBuffer {
     @Test
     public void testPutSucceeds() {
         RingBuffer ringBuffer = new RingBuffer(2);
-        assertEquals(true, ringBuffer.put(1));
+        assertTrue(ringBuffer.put(1));
     }
 
     @Test
@@ -92,7 +202,7 @@ public class TestRingBuffer {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
-        assertEquals(false, ringBuffer.put(3));
+        assertFalse(ringBuffer.put(3));
     }
 
     @Test
@@ -105,7 +215,7 @@ public class TestRingBuffer {
     @Test
     public void testTakeFails() {
         RingBuffer ringBuffer = new RingBuffer(2);
-        assertEquals(null, ringBuffer.take());
+        assertNull(ringBuffer.take());
     }
 
     @Test
@@ -117,7 +227,7 @@ public class TestRingBuffer {
         ringBuffer.take();
         ringBuffer.put(3);
         ringBuffer.take();
-        assertEquals(null, ringBuffer.take());
+        assertNull(ringBuffer.take());
     }
 
     @Test
@@ -125,31 +235,31 @@ public class TestRingBuffer {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
-        assertEquals(true, ringBuffer.isFull());
+        assertTrue(ringBuffer.isFull());
     }
 
     @Test
     public void testIsFullFalse() {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
-        assertEquals(false, ringBuffer.isFull());
+        assertFalse(ringBuffer.isFull());
     }
 
     @Test
     public void testIsEmptyTrue() {
         RingBuffer ringBuffer = new RingBuffer(2);
-        assertEquals(true, ringBuffer.isEmpty());
+        assertTrue(ringBuffer.isEmpty());
     }
 
     @Test
     public void testIsEmptyFalse() {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
-        assertEquals(false, ringBuffer.isEmpty());
+        assertFalse(ringBuffer.isEmpty());
     }
 
     @Test
-    public void testSuccessfullReadFromEndOfBuffer() {
+    public void testSuccessfulReadFromEndOfBuffer() {
         RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
