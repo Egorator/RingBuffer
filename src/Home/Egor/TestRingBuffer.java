@@ -17,13 +17,13 @@ public class TestRingBuffer {
 
     @Test
     public void testTakeVoid() {
-        RingBuffer ringBuffer = new RingBuffer(3);
+        RingBuffer ringBuffer = new RingBuffer(2);
         assertEquals(null, ringBuffer.take());
     }
 
     @Test
     public void testBufferOverflown() {//tests writePos when put() method returns false
-        RingBuffer ringBuffer = new RingBuffer(3);
+        RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
         assertEquals(ringBuffer.put(3), false);
@@ -31,26 +31,23 @@ public class TestRingBuffer {
 
     @Test
     public void testWrapped() {//tests both WritePos and ReadPos wrapped
-        RingBuffer ringBuffer = new RingBuffer(3);
+        RingBuffer ringBuffer = new RingBuffer(2);
         ringBuffer.put(1);
         ringBuffer.put(2);
         ringBuffer.take();
         ringBuffer.put(3);
         ringBuffer.take();
-        ringBuffer.put(4);
-        ringBuffer.take();
-        assertEquals(ringBuffer.take(), 4);
+        assertEquals(ringBuffer.take(), 3);
     }
 
     @Test
     public void testResetFunc() {
-        RingBuffer ringBuffer = new RingBuffer(8);
+        int remainingCapacity = 8;
+        RingBuffer ringBuffer = new RingBuffer(remainingCapacity);
         ringBuffer.put('a');
         ringBuffer.put('b');
-        ringBuffer.take();
         ringBuffer.reset();
-        assertEquals(0, ringBuffer.readPos());
-        assertEquals(0, ringBuffer.writePos());
+        assertEquals(8, ringBuffer.remainingCapacity());
     }
 
     @Test
